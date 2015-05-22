@@ -3,24 +3,35 @@ module Network.Cloudant.Api where
 
 import           Control.Lens
 import qualified Data.ByteString.Lazy.Char8 as L
+import           Data.Monoid                (mconcat, (<>))
 import           Network.Wreq
 
--- Simple GET request
+-- Resource endpoints
 
-simpleGet :: IO L.ByteString
-simpleGet = do
-    r <- get "http://httpbin.org/get"
-    return $ r ^. responseBody
+urlForAccount :: String -> String
+urlForAccount account = "https://" <> account <> ".cloudant.com"
 
-getStatusCode :: IO Int
-getStatusCode = do
-    r <- get "http://httpbin.org/get"
-    return $ r ^. responseStatus ^. statusCode
+getHTTPEndpoint ::
+  String ->
+  String ->
+  String
+getHTTPEndpoint account resource =
+    mconcat [ "https://", account, ".cloudant.com", resource ]
 
--- Request with basic Authentication
+class Cloudant a where
+    resourceEndpoint :: a -> String -> String
 
-request :: IO L.ByteString
-request = do
+-- Simple GET requests
+getWithAuth :: IO L.ByteString
+getWithAuth = do
     let opts = defaults & auth ?~ basicAuth "myuser" "mypass"
     r <- getWith opts "http://httpbin.org/get"
     return $ (r ^. responseBody)
+
+-- Types
+
+data GetDatabases = GetDatabases {
+} deriving ( Show )
+
+instance Cloudant GetDatabases where
+    resourceEndpoint _ account = getHTTPEndpoint account "/all_dbs"
