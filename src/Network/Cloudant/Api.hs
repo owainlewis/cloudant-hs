@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Network.Cloudant.Api where
+module Network.Cloudant.Api
+  ( getWithAuth ) 
+  where
 
 import           Control.Lens
 import qualified Data.ByteString.Char8      as BS
