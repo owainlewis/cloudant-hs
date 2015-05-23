@@ -15,11 +15,13 @@ library
     Network.Cloudant.Api
   build-depends:
     base >=4.7 && <4.8,
+    http-conduit >= 1.8,
     wreq,
     lens,
     aeson,
     bytestring,
-    text
+    text,
+    containers
   hs-source-dirs:      src
   default-language:    Haskell2010
 
