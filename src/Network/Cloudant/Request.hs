@@ -12,7 +12,6 @@ import qualified Data.ByteString.Lazy.Char8 as LBS
 import           Data.Maybe                 (fromJust, fromMaybe)
 import           Network.HTTP.Conduit
 
--- Basic authentication tuple
 type Auth = (String, String)
 
 user :: Auth -> String
@@ -22,11 +21,6 @@ pass :: Auth -> String
 pass auth = auth ^. _2
 
 -- Build a request with basic authentication
---
--- Example:
---
---     buildRequest "GET" "https://httpbin.org/get" ("", "") Nothing
---
 buildRequest ::
     String ->
     String ->
