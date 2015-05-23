@@ -3,6 +3,7 @@ module Network.Cloudant.Api
   ( )
   where
 
+import qualified Control.Exception          as E
 import           Control.Lens
 import           Data.Aeson
 import qualified Data.ByteString.Char8      as BS
@@ -11,8 +12,7 @@ import           Data.Maybe                 (fromJust, fromMaybe)
 import           Data.Monoid                (mconcat, (<>))
 import           Network.HTTP.Conduit
 
--- Basic authentication tuple
-type Auth = (String, String)
+type Auth = ( String, String )
 
 user :: Auth -> String
 user auth = auth ^. _1
@@ -21,7 +21,6 @@ pass :: Auth -> String
 pass auth = auth ^. _2
 
 -- Build a request with basic authentication
---
 buildRequest ::
     String ->
     String ->
@@ -45,20 +44,35 @@ runRequest request = do
     response <- withManager $ httpLbs req
     return . responseBody $ response
 
--- Make a HTTP request
--- HTTP method, url, basic authentication and an optional request body
---
--- Example :
---     makeRequest "https://httpbin.org/get" ("jack", "secret") Nothing
---
+catchAny :: IO a -> (E.SomeException -> IO a) -> IO a
+catchAny = E.catch
+
+safeRequest :: IO Request -> IO (Either String LBS.ByteString)
+safeRequest request = do
+    response <- E.try (runRequest request) :: IO (Either E.SomeException LBS.ByteString)
+    case response of
+        Left  e -> return . Left $ "Error. Could not run request"
+        Right r -> return . Right $ r
+
 makeRequest ::
     String -> -- HTTP Method e.g GET
     String ->
     Auth   ->
     Maybe BS.ByteString ->
-    IO LBS.ByteString
+    IO (Either String LBS.ByteString)
 makeRequest method url auth body =
-    runRequest $ buildRequest method url auth body
+    safeRequest $ buildRequest method url auth body
+
+-- Helper methods
+get, post, put, delete ::
+    String ->
+    Auth ->
+    Maybe BS.ByteString ->
+    IO (Either String LBS.ByteString)
+get    = makeRequest "GET"
+post   = makeRequest "POST"
+put    = makeRequest "PUT"
+delete = makeRequest "DELETE"
 
 class Cloudant a where
     getResource :: a -> String
@@ -80,30 +94,44 @@ data GetPermissions = GetPermissions {
     getPermissionsAccount  :: String
   , getPermissionsDatabase :: String
 }
+
 instance Cloudant GetPermissions where
     getResource x = getHTTPEndpoint userAccount resource
                     where userAccount = (getPermissionsAccount x)
                           resource    = "/_api/v2/db/" <> (getPermissionsDatabase x) <> "/_security"
 
-instance Show GetPermissions where show = getResource
-
 -- Databases
+-- ******************************************************
+
 -- 1. Create database
+
 data CreateDatabase = CreateDatabase {
     createDatabaseAccount  :: String
-  , createDatabaseDatabase :: String
-}
+  , createDatabaseDatabase :: String }
+
+instance Cloudant CreateDatabase where
+    getResource x = getHTTPEndpoint account ("/" <> database)
+        where account  = (createDatabaseAccount x)
+              database = (createDatabaseDatabase x)
+
+createDatabase :: String -> Auth -> String -> IO (Either String LBS.ByteString)
+createDatabase account auth database =
+    put (getResource $ CreateDatabase account database) auth Nothing
+
 -- 2. Read database
+
 -- 3. Get databases
+
 data GetDatabases = GetDatabases { getDatabasesAccount :: String }
 
 instance Cloudant GetDatabases where
     getResource x = getHTTPEndpoint userAccount "/_all_dbs"
         where userAccount = (getDatabasesAccount x)
 
-getDatabases :: String -> Auth -> IO LBS.ByteString
+getDatabases :: String -> Auth -> IO (Either String LBS.ByteString)
 getDatabases account auth =
-    makeRequest "GET" (getResource $ GetDatabases account) auth Nothing
+    get (getResource $ GetDatabases account) auth Nothing
+
 -- 4. Get documents
 -- 5. Get changes
 -- 6. Delete

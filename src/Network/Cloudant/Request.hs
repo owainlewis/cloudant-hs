@@ -6,6 +6,7 @@ module Network.Cloudant.Request
   , makeRequest
   ) where
 
+import qualified Control.Exception          as E
 import           Control.Lens
 import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
@@ -36,6 +37,8 @@ buildRequest reqMethod url auth body = do
                        }
     return request
 
+get = buildRequest "GET"
+
 -- Run a HTTP request returning the response body
 --
 runRequest :: IO Request -> IO LBS.ByteString
@@ -43,6 +46,16 @@ runRequest request = do
     req <- request
     response <- withManager $ httpLbs req
     return . responseBody $ response
+
+catchAny :: IO a -> (E.SomeException -> IO a) -> IO a
+catchAny = E.catch
+
+safeRequest :: IO Request -> IO (Either String LBS.ByteString)
+safeRequest request = do
+    response <- E.try (runRequest request) :: IO (Either E.SomeException LBS.ByteString)
+    case response of
+        Left  e -> return . Left $ "Error. Could not run request"
+        Right r -> return . Right $ r
 
 -- Make a HTTP request
 -- HTTP method, url, basic authentication and an optional request body
@@ -55,6 +68,6 @@ makeRequest ::
     String ->
     Auth   ->
     Maybe BS.ByteString ->
-    IO LBS.ByteString
+    IO (Either String LBS.ByteString)
 makeRequest method url auth body =
-    runRequest $ buildRequest method url auth body
+    safeRequest $ buildRequest method url auth body
