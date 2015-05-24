@@ -35,6 +35,9 @@ getHTTPEndpoint account resource =
             , ".cloudant.com"
             , resource ]
 
+slash :: String -> String
+slash s = "/" <> s
+
 transformJSON :: (FromJSON a) => IO (Either String LBS.ByteString) -> IO (Maybe a)
 transformJSON response = do
   r <- response
@@ -86,7 +89,7 @@ data CreateDatabase = CreateDatabase {
 
 instance Cloudant CreateDatabase where
     getResource (CreateDatabase account database) =
-        getHTTPEndpoint account ("/" <> database)
+        getHTTPEndpoint account (slash database)
 
 createDatabase :: String -> Auth -> String -> IO (Either String LBS.ByteString)
 createDatabase account auth database =
@@ -99,7 +102,8 @@ data ReadDatabase = ReadDatabase {
 }
 
 instance Cloudant ReadDatabase where
-    getResource x = getHTTPEndpoint (readDatabaseAccount x) ("/" <> readDatabaseDatabase x)
+    getResource (ReadDatabase account database) =
+        getHTTPEndpoint account ("/" <> database)
 
 readDatabase account auth database =
     get (getResource $ ReadDatabase account database) auth Nothing
@@ -110,9 +114,10 @@ data GetDatabases = GetDatabases { getDatabasesAccount :: String }
 instance Cloudant GetDatabases where
     getResource (GetDatabases account) = getHTTPEndpoint account "/_all_dbs"
 
-getDatabases :: String -> Auth -> IO (Either String LBS.ByteString)
+getDatabases :: String -> Auth -> IO (Maybe [String])
 getDatabases account auth =
-    get (getResource $ GetDatabases account) auth Nothing
+    transformJSON response :: IO (Maybe [String])
+    where response = get (getResource $ GetDatabases account) auth Nothing
 
 -- 4. Get documents
 data GetDocuments = GetDocuments {
@@ -121,8 +126,25 @@ data GetDocuments = GetDocuments {
 }
 
 instance Cloudant GetDocuments where
-    getResource (GetDocuments account database) = getHTTPEndpoint account database
+    getResource (GetDocuments account database) =
+        getHTTPEndpoint account (slash database)
 
 -- 5. Get changes
 
 -- 6. Delete
+
+data DeleteDatabase = DeleteDatabase {
+    deleteDatabaseAccount  :: String
+  , deleteDatabaseDatabase :: String
+}
+
+instance Cloudant DeleteDatabase where
+    getResource (DeleteDatabase account database) =
+        getHTTPEndpoint account (slash database)
+
+deleteDatabase account auth database =
+    delete (getResource $ DeleteDatabase account database) auth Nothing
+
+-- *****************************************************************
+-- Documents
+-- *****************************************************************
