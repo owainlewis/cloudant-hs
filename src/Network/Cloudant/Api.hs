@@ -182,7 +182,10 @@ data CreateDocumentResponse = CreateDocumentResponse {
 } deriving ( Show, Eq )
 
 instance FromJSON CreateDocumentResponse where
-    parseJSON (Object o) = CreateDocumentResponse <$> o .: "ok" <*> o .: "id" <*> o .: "rev"
+    parseJSON (Object o) = 
+        CreateDocumentResponse <$> o .: "ok" 
+                               <*> o .: "id" 
+                               <*> o .: "rev"
     parseJSON _ = mzero
 
 -- Create a new Cloudant document
