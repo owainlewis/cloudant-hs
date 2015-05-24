@@ -178,17 +178,47 @@ data CreateDocumentResponse = CreateDocumentResponse {
   , createRevision :: String
 } deriving ( Show, Eq )
 
+instance FromJSON CreateDocumentResponse where
+    parseJSON (Object o) = CreateDocumentResponse <$> o .: "ok" <*> o .: "id" <*> o .: "rev"
+    parseJSON _ = mzero
+
 -- Create a new Cloudant document
 --
 -- Use a simpe Map for the document body
 --
-createDocument
-  :: String
-     -> Auth
-     -> String
-     -> M.Map String String
-     -> IO (Either String LBS.ByteString)
+createDocument ::
+      String
+   -> Auth
+   -> String
+   -> M.Map String String
+   -> IO (Maybe CreateDocumentResponse)
 createDocument account auth database document =
-    post resource auth (Just $ documentAsJSON document)
+    transformJSON response :: IO (Maybe CreateDocumentResponse)
     where resource = (getResource $ CreateDocument account database document)
           documentAsJSON = LBS.toStrict . encode
+          response = post resource auth (Just $ documentAsJSON document)
+
+data ReadDocument = ReadDocument {
+    readDocumentAccount    :: String
+  , readDocumentDatabase   :: String
+  , readDocumentIdentifier :: String
+} deriving ( Show, Eq )
+
+instance Cloudant ReadDocument where
+    getResource (ReadDocument account database id) =
+        getHTTPEndpoint account $ (slash database) <> (slash id)
+
+-- Read a document
+-- The uncoding here is left to the user
+--
+-- Here is an example for a Document with a string string map structure
+--
+-- λ> let read = readDocument "account" ("user", "pass") "users"
+-- λ> read "e9b5771b00358fb98921b099e02706c9" :: IO (Maybe (M.Map String String))
+-- Just (fromList [("_id","e9b5771b00358fb98921b099e02706c9"),("_rev","1-d65d8e5cd6ff7ceeec7fcec5e79a7669"),("baz","foo"),("foo","bar")])
+--
+readDocument :: FromJSON a => String -> Auth -> String -> String -> IO (Maybe a)
+readDocument account auth database id =
+    transformJSON response
+    where resource = getResource $ ReadDocument account database id
+          response = get resource auth Nothing
