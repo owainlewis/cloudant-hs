@@ -79,7 +79,10 @@ data GenerateAPIKeyResponse = GenerateAPIKeyResponse {
 } deriving ( Show, Eq )
 
 instance FromJSON GenerateAPIKeyResponse where
-    parseJSON (Object o) = GenerateAPIKeyResponse <$> o .: "password" <*> o .: "ok" <*> o .: "key"
+    parseJSON (Object o) = 
+        GenerateAPIKeyResponse <$> o .: "password" 
+                               <*> o .: "ok" 
+                               <*> o .: "key"
     parseJSON _ = mzero
 
 instance Cloudant GenerateAPIKey where
