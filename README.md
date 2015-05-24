@@ -21,8 +21,11 @@ import Network.Cloudant.Api
 
 auth :: Auth
 auth = ("username", "password)
+```
 
--- All request functions typically require your username and authentication credentials i.e
+All request functions typically require your username and authentication credentials i.e
+
+```haskell
 
 repsonse :: IO (Maybe GenerateAPIKeyResponse)
 response = generateAPIKey "yourusername" auth
