@@ -24,6 +24,9 @@ import           Data.Maybe                 (fromJust, fromMaybe)
 import           Data.Monoid                (mconcat, (<>))
 import           Network.Cloudant.Request
 
+-- All request kinds must adhere to this method of generating
+-- the resource url
+--
 class Cloudant a where
     getResource :: a -> String
 
@@ -37,8 +40,14 @@ getHTTPEndpoint account resource =
             , ".cloudant.com"
             , resource ]
 
+-- Utility function to add a slash prefix to a given request path
+--
 slash :: String -> String
 slash s = "/" <> s
+
+-- Strict encoding for Aeson
+strictEncode :: ToJSON a => a -> BS.ByteString
+strictEncode = LBS.toStrict . encode
 
 transformJSON :: (FromJSON a) => IO (Either String LBS.ByteString) -> IO (Maybe a)
 transformJSON response = do
