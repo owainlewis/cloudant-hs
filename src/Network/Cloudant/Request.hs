@@ -19,6 +19,8 @@ import           Network.HTTP.Conduit
 
 type Auth = (String, String)
 
+type QueryParams = [(BS.ByteString, Maybe BS.ByteString)]
+
 user :: Auth -> String
 user auth = auth ^. _1
 
@@ -86,3 +88,16 @@ makeRequest ::
     IO (Either String LBS.ByteString)
 makeRequest method url auth body =
     safeRequest $ buildRequest method url auth body
+
+-- Make a HTTP request with additional query params
+--
+requestWithParams ::
+    String ->
+    String ->
+    Auth ->
+    Maybe BS.ByteString ->
+    [(BS.ByteString, Maybe BS.ByteString)] ->  -- A list of query params
+    IO (Either String LBS.ByteString)
+requestWithParams method url auth body params =
+    safeRequest $ (setQueryString params) `fmap` initialRequest
+        where initialRequest = buildRequest method url auth body
