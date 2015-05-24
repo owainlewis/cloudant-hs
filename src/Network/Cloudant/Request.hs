@@ -1,9 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Request
   ( Auth
-  , buildRequest
-  , runRequest
+  , user
+  , pass
   , makeRequest
+  , get
+  , post
+  , put
+  , delete
   ) where
 
 import qualified Control.Exception          as E
