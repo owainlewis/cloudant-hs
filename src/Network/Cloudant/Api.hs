@@ -34,8 +34,7 @@ getHTTPEndpoint account resource =
             , resource ]
 
 -- Security
--- *****************************************************
-
+-- -----------------------------------------
 data GetPermissions = GetPermissions {
     getPermissionsAccount  :: String
   , getPermissionsDatabase :: String
@@ -60,10 +59,10 @@ generateAPIKey account auth =
     post (getResource $ GenerateAPIKey account) auth Nothing
 
 -- Databases
--- ******************************************************
+--|-----------------------------------------
 
 -- 1. Create database
-
+--|-----------------------------------------
 data CreateDatabase = CreateDatabase {
     createDatabaseAccount  :: String
   , createDatabaseDatabase :: String }
@@ -77,6 +76,7 @@ createDatabase account auth database =
     put (getResource $ CreateDatabase account database) auth Nothing
 
 -- 2. Read database
+--|-----------------------------------------
 data ReadDatabase = ReadDatabase {
     readDatabaseAccount  :: String
   , readDatabaseDatabase :: String
@@ -89,6 +89,7 @@ readDatabase account auth database =
     get (getResource $ ReadDatabase account database) auth Nothing
 
 -- 3. Get databases
+--|-----------------------------------------
 data GetDatabases = GetDatabases { getDatabasesAccount :: String }
 
 instance Cloudant GetDatabases where
@@ -99,6 +100,7 @@ getDatabases account auth =
     get (getResource $ GetDatabases account) auth Nothing
 
 -- 4. Get documents
+--|-----------------------------------------
 data GetDocuments = GetDocuments {
     getDocumentsAccount  :: String
   , getDocumentsDatabase :: String
@@ -108,4 +110,8 @@ instance Cloudant GetDocuments where
     getResource (GetDocuments account database) = getHTTPEndpoint account database
 
 -- 5. Get changes
+--|-----------------------------------------
+
 -- 6. Delete
+--|-----------------------------------------
+
