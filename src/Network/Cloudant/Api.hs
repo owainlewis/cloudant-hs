@@ -12,7 +12,9 @@ module Network.Cloudant.Api
   , getDatabases
   ) where
 
+import           Control.Applicative
 import           Control.Lens
+import           Control.Monad              (mzero)
 import           Data.Aeson
 import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
@@ -33,8 +35,14 @@ getHTTPEndpoint account resource =
             , ".cloudant.com"
             , resource ]
 
+transformJSON :: (FromJSON a) => IO (Either String LBS.ByteString) -> IO (Maybe a)
+transformJSON response = do
+  r <- response
+  case r of
+    Left e     -> return mzero
+    Right json -> return . decode $ json
+
 -- Security
--- -----------------------------------------
 data GetPermissions = GetPermissions {
     getPermissionsAccount  :: String
   , getPermissionsDatabase :: String
@@ -50,19 +58,28 @@ getPermissions account auth database =
 
 data GenerateAPIKey = GenerateAPIKey { generateAPIKeyAccount :: String }
 
+data GenerateAPIKeyResponse = GenerateAPIKeyResponse {
+    password :: String
+  , ok       :: Bool
+  , key      :: String
+} deriving ( Show, Eq )
+
+instance FromJSON GenerateAPIKeyResponse where
+    parseJSON (Object o) = GenerateAPIKeyResponse <$> o .: "password" <*> o .: "ok" <*> o .: "key"
+    parseJSON _ = mzero
+
 instance Cloudant GenerateAPIKey where
     getResource (GenerateAPIKey account) = getHTTPEndpoint account "/_api/v2/api_keys"
 
 -- Generate a new API key for your account
-generateAPIKey :: String -> Auth -> IO (Either String LBS.ByteString)
+generateAPIKey :: String -> Auth -> IO (Maybe GenerateAPIKeyResponse)
 generateAPIKey account auth =
-    post (getResource $ GenerateAPIKey account) auth Nothing
+    transformJSON response :: IO (Maybe GenerateAPIKeyResponse)
+    where response = post (getResource $ GenerateAPIKey account) auth Nothing
 
 -- Databases
---|-----------------------------------------
 
 -- 1. Create database
---|-----------------------------------------
 data CreateDatabase = CreateDatabase {
     createDatabaseAccount  :: String
   , createDatabaseDatabase :: String }
@@ -76,7 +93,6 @@ createDatabase account auth database =
     put (getResource $ CreateDatabase account database) auth Nothing
 
 -- 2. Read database
---|-----------------------------------------
 data ReadDatabase = ReadDatabase {
     readDatabaseAccount  :: String
   , readDatabaseDatabase :: String
@@ -89,7 +105,6 @@ readDatabase account auth database =
     get (getResource $ ReadDatabase account database) auth Nothing
 
 -- 3. Get databases
---|-----------------------------------------
 data GetDatabases = GetDatabases { getDatabasesAccount :: String }
 
 instance Cloudant GetDatabases where
@@ -100,7 +115,6 @@ getDatabases account auth =
     get (getResource $ GetDatabases account) auth Nothing
 
 -- 4. Get documents
---|-----------------------------------------
 data GetDocuments = GetDocuments {
     getDocumentsAccount  :: String
   , getDocumentsDatabase :: String
@@ -110,8 +124,5 @@ instance Cloudant GetDocuments where
     getResource (GetDocuments account database) = getHTTPEndpoint account database
 
 -- 5. Get changes
---|-----------------------------------------
 
 -- 6. Delete
---|-----------------------------------------
-
