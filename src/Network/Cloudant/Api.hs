@@ -18,6 +18,7 @@ import           Control.Monad              (mzero)
 import           Data.Aeson
 import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map                   as M
 import           Data.Maybe                 (fromJust, fromMaybe)
 import           Data.Monoid                (mconcat, (<>))
 import           Network.Cloudant.Request
@@ -49,7 +50,7 @@ transformJSON response = do
 data GetPermissions = GetPermissions {
     getPermissionsAccount  :: String
   , getPermissionsDatabase :: String
-}
+} deriving ( Show, Eq )
 
 instance Cloudant GetPermissions where
     getResource (GetPermissions account database) = getHTTPEndpoint account resource
@@ -85,7 +86,8 @@ generateAPIKey account auth =
 -- 1. Create database
 data CreateDatabase = CreateDatabase {
     createDatabaseAccount  :: String
-  , createDatabaseDatabase :: String }
+  , createDatabaseDatabase :: String
+} deriving ( Show, Eq )
 
 instance Cloudant CreateDatabase where
     getResource (CreateDatabase account database) =
@@ -99,7 +101,7 @@ createDatabase account auth database =
 data ReadDatabase = ReadDatabase {
     readDatabaseAccount  :: String
   , readDatabaseDatabase :: String
-}
+} deriving ( Show, Eq )
 
 instance Cloudant ReadDatabase where
     getResource (ReadDatabase account database) =
@@ -110,6 +112,7 @@ readDatabase account auth database =
 
 -- 3. Get databases
 data GetDatabases = GetDatabases { getDatabasesAccount :: String }
+  deriving ( Show, Eq )
 
 instance Cloudant GetDatabases where
     getResource (GetDatabases account) = getHTTPEndpoint account "/_all_dbs"
@@ -123,7 +126,7 @@ getDatabases account auth =
 data GetDocuments = GetDocuments {
     getDocumentsAccount  :: String
   , getDocumentsDatabase :: String
-}
+} deriving ( Show, Eq )
 
 instance Cloudant GetDocuments where
     getResource (GetDocuments account database) =
@@ -136,7 +139,7 @@ instance Cloudant GetDocuments where
 data DeleteDatabase = DeleteDatabase {
     deleteDatabaseAccount  :: String
   , deleteDatabaseDatabase :: String
-}
+} deriving ( Show, Eq )
 
 instance Cloudant DeleteDatabase where
     getResource (DeleteDatabase account database) =
@@ -148,3 +151,18 @@ deleteDatabase account auth database =
 -- *****************************************************************
 -- Documents
 -- *****************************************************************
+
+data CreateDocument = CreateDocument {
+    createDocumentAccount  :: String
+  , createDocumentDatabase :: String
+  , createDocumentDocument :: M.Map String String
+} deriving ( Show, Eq )
+
+instance Cloudant CreateDocument where
+    getResource (CreateDocument account database _) =
+        getHTTPEndpoint account (slash database)
+
+createDocument account auth database document =
+    post resource auth (Just $ documentAsJSON document)
+    where resource = (getResource $ CreateDocument account database document)
+          documentAsJSON = LBS.toStrict . encode

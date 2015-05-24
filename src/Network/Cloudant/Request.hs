@@ -37,6 +37,7 @@ buildRequest reqMethod url auth body = do
         uri = applyBasicAuth (BS.pack $ user auth) (BS.pack $ pass auth) $ fromJust $ parseUrl url
         request  = uri { method = (BS.pack reqMethod)
                        , secure = True
+                       , requestBody = RequestBodyBS reqBody
                        , port = 443
                        }
     return request
@@ -67,7 +68,7 @@ safeRequest :: IO Request -> IO (Either String LBS.ByteString)
 safeRequest request = do
     response <- E.try (runRequest request) :: IO (Either E.SomeException LBS.ByteString)
     case response of
-        Left  e -> return . Left $ "Error. Could not run request"
+        Left  e -> return . Left $ (show e)
         Right r -> return . Right $ r
 
 -- Make a HTTP request
