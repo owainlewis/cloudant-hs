@@ -14,7 +14,7 @@ library
   exposed-modules:
     Network.Cloudant.Api
   build-depends:
-    base >=4.7 && <4.8,
+    base    == 4.*,
     http-conduit >= 1.8,
     wreq,
     lens,
@@ -25,19 +25,17 @@ library
   hs-source-dirs:      src
   default-language:    Haskell2010
 
+
 test-suite spec
-  ghc-options:
-    -Wall
-    -Werror
-  hs-source-dirs:
-    src, test
-  build-depends:
-    cloudant
-  default-language:
-    Haskell2010
-  other-modules:
-    Spec
-  main-is:
-    Spec.hs
   type:
-    exitcode-stdio-1.0
+      exitcode-stdio-1.0
+  ghc-options:
+      -Wall
+  hs-source-dirs:
+      test
+  main-is:
+      Spec.hs
+  build-depends:
+      base    == 4.*
+    , cloudant
+    , hspec   == 2.*

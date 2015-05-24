@@ -1,7 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Api
-  ( )
-  where
+  ( Auth
+  , user
+  , pass
+  , urlForAccount
+  , getHTTPEndpoint
+  , Cloudant(..)
+  , CreateDatabase(..)
+  , createDatabase
+  , GetDatabases(..)
+  , getDatabases
+  ) where
 
 import qualified Control.Exception          as E
 import           Control.Lens
