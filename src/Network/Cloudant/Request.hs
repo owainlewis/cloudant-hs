@@ -37,7 +37,16 @@ buildRequest reqMethod url auth body = do
                        }
     return request
 
-get = buildRequest "GET"
+-- Helper methods
+get, post, put, delete ::
+    String ->
+    Auth ->
+    Maybe BS.ByteString ->
+    IO (Either String LBS.ByteString)
+get    = makeRequest "GET"
+post   = makeRequest "POST"
+put    = makeRequest "PUT"
+delete = makeRequest "DELETE"
 
 -- Run a HTTP request returning the response body
 --
