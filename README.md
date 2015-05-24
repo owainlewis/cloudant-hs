@@ -9,7 +9,7 @@ All requests and responses follow a uniform approach.
 You will need your account name and either a (username, password) or (username,  api-key) tuple for authentication
 
 ```
-https://yourusername.cloudant.com
+https://<USERNAME>.cloudant.com
 ```
 
 ## Authentication
@@ -28,7 +28,7 @@ All request functions typically require your username and authentication credent
 ```haskell
 
 repsonse :: IO (Maybe GenerateAPIKeyResponse)
-response = generateAPIKey "yourusername" auth
+response = generateAPIKey "<USERNAME>" auth
 
 ```
 
