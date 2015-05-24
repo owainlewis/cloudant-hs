@@ -37,6 +37,7 @@ buildRequest reqMethod url auth body = do
         uri = applyBasicAuth (BS.pack $ user auth) (BS.pack $ pass auth) $ fromJust $ parseUrl url
         request  = uri { method = (BS.pack reqMethod)
                        , secure = True
+                       , requestHeaders = [("Content-Type", "application/json")]
                        , requestBody = RequestBodyBS reqBody
                        , port = 443
                        }

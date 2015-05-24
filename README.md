@@ -34,7 +34,7 @@ response = generateAPIKey "<USERNAME>" auth
 
 # Examples
 
-Generating an API key
+Create a document
 
 ```haskell
 
@@ -42,9 +42,9 @@ module Main where
 
 import Network.Cloudant.Api
 
--- Generate a new API key
+-- Assuming there is a database users that we have permission to write to
 
--- generateAPIKey "yourusername" ("username", "password")
--- Just (GenerateAPIKeyResponse {password = "cloudantPassword", ok = True, key = "cloudantKey"})
+createDocument "username" ("user", "pass") "users" (M.fromList [("foo", "bar")])
+-- Right "{\"ok\":true,\"id\":\"c6b903451addd368aa834fd51e984d0f\",\"rev\":\"1-4c6114c65e295552ab1019e2b046b10e\"}\n"
 
 ```

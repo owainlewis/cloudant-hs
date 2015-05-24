@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Network.Cloudant.Api
   ( Auth
   , user
@@ -162,6 +163,22 @@ instance Cloudant CreateDocument where
     getResource (CreateDocument account database _) =
         getHTTPEndpoint account (slash database)
 
+data CreateDocumentResponse = CreateDocumentResponse {
+    createdOk      :: Bool
+  , createId       :: String
+  , createRevision :: String
+} deriving ( Show, Eq )
+
+-- Create a new Cloudant document
+--
+-- Use a simpe Map for the document body
+--
+createDocument
+  :: String
+     -> Auth
+     -> String
+     -> M.Map String String
+     -> IO (Either String LBS.ByteString)
 createDocument account auth database document =
     post resource auth (Just $ documentAsJSON document)
     where resource = (getResource $ CreateDocument account database document)
