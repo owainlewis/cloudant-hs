@@ -222,3 +222,13 @@ readDocument account auth database id =
     transformJSON response
     where resource = getResource $ ReadDocument account database id
           response = get resource auth Nothing
+
+data DeleteDocument = DeleteDocument {
+    deleteDocumentAccount  :: String
+  , deleteDocumentDatabase :: String
+  , deleteDocumentRevision :: String
+} deriving ( Show, Eq )
+
+instance Cloudant DeleteDocument where
+    getResource (DeleteDocument account database rev) =
+        getHTTPEndpoint account $ (slash database) <> (slash rev)
