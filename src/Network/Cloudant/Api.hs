@@ -28,6 +28,7 @@ import           Network.Cloudant.Request
 -- the resource url
 --
 class Cloudant a where
+    -- | Extract the full resource URL e.g https://user.cloudant.com/database
     getResource :: a -> String
 
 urlForAccount :: String -> String
