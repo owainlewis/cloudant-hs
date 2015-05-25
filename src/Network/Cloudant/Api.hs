@@ -22,7 +22,7 @@ import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
 import qualified Data.Map                   as M
 import           Data.Maybe                 (fromJust, fromMaybe)
-import           Data.Monoid                (mconcat, (<>))
+import           Data.Monoid                ((<>))
 import           Network.Cloudant.Request
 
 -- All request kinds must adhere to this method of generating
@@ -36,11 +36,7 @@ urlForAccount :: String -> String
 urlForAccount account = "https://" <> account <> ".cloudant.com"
 
 getHTTPEndpoint :: String -> String -> String
-getHTTPEndpoint account resource =
-    mconcat [ "https://"
-            , account
-            , ".cloudant.com"
-            , resource ]
+getHTTPEndpoint account resource = concat [ "https://", account, ".cloudant.com", resource ]
 
 -- Utility function to add a slash prefix to a given request path
 --
