@@ -11,6 +11,7 @@ module Network.Cloudant.Api
   , createDatabase
   , GetDatabases(..)
   , getDatabases
+  , GetDocuments(..)
   ) where
 
 import           Control.Applicative
@@ -80,9 +81,9 @@ data GenerateAPIKeyResponse = GenerateAPIKeyResponse {
 } deriving ( Show, Eq )
 
 instance FromJSON GenerateAPIKeyResponse where
-    parseJSON (Object o) = 
-        GenerateAPIKeyResponse <$> o .: "password" 
-                               <*> o .: "ok" 
+    parseJSON (Object o) =
+        GenerateAPIKeyResponse <$> o .: "password"
+                               <*> o .: "ok"
                                <*> o .: "key"
     parseJSON _ = mzero
 
@@ -95,7 +96,8 @@ generateAPIKey account auth =
     transformJSON response :: IO (Maybe GenerateAPIKeyResponse)
     where response = post (getResource $ GenerateAPIKey account) auth Nothing
 
--- Databases
+-- | Databases
+---------------------------------------------
 
 -- 1. Create database
 data CreateDatabase = CreateDatabase {
@@ -121,6 +123,7 @@ instance Cloudant ReadDatabase where
     getResource (ReadDatabase account database) =
         getHTTPEndpoint account ("/" <> database)
 
+readDatabase :: String -> Auth -> String -> IO (Either String LBS.ByteString)
 readDatabase account auth database =
     get (getResource $ ReadDatabase account database) auth Nothing
 
@@ -159,12 +162,12 @@ instance Cloudant DeleteDatabase where
     getResource (DeleteDatabase account database) =
         getHTTPEndpoint account (slash database)
 
+deleteDatabase :: String -> Auth -> String -> IO (Either String LBS.ByteString)
 deleteDatabase account auth database =
     delete (getResource $ DeleteDatabase account database) auth Nothing
 
--- *****************************************************************
--- Documents
--- *****************************************************************
+-- | Documents
+---------------------------------------------
 
 data CreateDocument = CreateDocument {
     createDocumentAccount  :: String
@@ -183,9 +186,9 @@ data CreateDocumentResponse = CreateDocumentResponse {
 } deriving ( Show, Eq )
 
 instance FromJSON CreateDocumentResponse where
-    parseJSON (Object o) = 
-        CreateDocumentResponse <$> o .: "ok" 
-                               <*> o .: "id" 
+    parseJSON (Object o) =
+        CreateDocumentResponse <$> o .: "ok"
+                               <*> o .: "id"
                                <*> o .: "rev"
     parseJSON _ = mzero
 
