@@ -220,8 +220,10 @@ instance Cloudant ReadDocument where
 -- Here is an example for a Document with a string string map structure
 --
 -- λ> let read = readDocument "account" ("user", "pass") "users"
+--
 -- λ> read "e9b5771b00358fb98921b099e02706c9" :: IO (Maybe (M.Map String String))
--- Just (fromList [("_id","e9b5771b00358fb98921b099e02706c9"),("_rev","1-d65d8e5cd6ff7ceeec7fcec5e79a7669"),("baz","foo"),("foo","bar")])
+--
+-- Just (fromList [("_id","e9b5771b00358fb98921b099e02706c9") ... 
 --
 readDocument :: FromJSON a => String -> Auth -> String -> String -> IO (Maybe a)
 readDocument account auth database id =
