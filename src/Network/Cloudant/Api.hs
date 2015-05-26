@@ -1,5 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-----------------------------------------------------------------------------
+--
+-- Haskell wrapper for IBM Cloudant API
+--
+-- Cloudant's RESTful API makes every document in your Cloudant database accessible as JSON via a URL; 
+-- this is one of the features that makes Cloudant so powerful for web applications.
+--
+-- (c) Owain Lewis (2015)
+--
+-----------------------------------------------------------------------------
+
 module Network.Cloudant.Api
   ( Auth
   , user
