@@ -58,6 +58,7 @@ getDatabases account auth =
 
 -- | 4. Get documents
 ------------------------------------------------------------------
+
 data GetDocuments = GetDocuments {
     getDocumentsAccount  :: String
   , getDocumentsDatabase :: String
