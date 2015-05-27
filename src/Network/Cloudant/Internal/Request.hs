@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Internal.Request
-  ( Auth
+  ( Auth(..)
   , makeRequest
   , get
   , post
@@ -15,6 +15,15 @@ import qualified Data.ByteString.Lazy.Char8 as LBS
 import           Data.Maybe                 (fromJust, fromMaybe)
 import           Data.Text                  (Text)
 import           Network.HTTP.Conduit
+
+-- Transformers
+
+import           Control.Exception
+import           Control.Monad.Error
+
+---------------------------------------
+
+---------------------------------------
 
 data Auth = Auth { username :: String, password :: String }
     deriving ( Show, Ord, Eq )
@@ -77,10 +86,10 @@ safeRequest request = do
 --     makeRequest "https://httpbin.org/get" (Auth "ibm", "secret") Nothing
 --
 makeRequest ::
-    String -> -- HTTP Method e.g GET
-    String ->
-    Auth   ->
-    Maybe BS.ByteString ->
+    String              -> -- HTTP Method e.g GET
+    String              -> -- The URL
+    Auth                -> -- Basic authentication creds
+    Maybe BS.ByteString -> -- Optional request body
     IO (Either String LBS.ByteString)
 makeRequest method url auth body =
     safeRequest $ buildRequest method url auth body
@@ -88,10 +97,10 @@ makeRequest method url auth body =
 -- Make a HTTP request with additional query params
 --
 requestWithParams ::
-    String ->
-    String ->
-    Auth ->
-    Maybe BS.ByteString ->
+    String                                 -> -- HTTP Method
+    String                                 -> -- URL
+    Auth                                   -> -- Basic authentication
+    Maybe BS.ByteString                    -> -- Optional request body
     [(BS.ByteString, Maybe BS.ByteString)] ->  -- A list of query params
     IO (Either String LBS.ByteString)
 requestWithParams method url auth body params =

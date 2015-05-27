@@ -9,7 +9,6 @@ main = hspec spec
 spec :: Spec
 spec = do
   describe "Cloudant" $ do
-    it "should get the username" $ do
-      let basic = ("foo", "bar")
-      (user basic) `shouldBe` "foo"
-      (pass basic) `shouldBe` "bar"
+    it "should run a request" $ do
+      let repsonse = makeRequest "GET" "https://httpbin.org/get" (Auth "ibm" "secret") Nothing
+      True

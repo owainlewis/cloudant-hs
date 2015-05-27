@@ -13,6 +13,7 @@
 
 module Network.Cloudant.Api
   ( Cloudant(..)
+  , urlForAccount
   , getHTTPEndpoint
   , slash
   , transformJSON
