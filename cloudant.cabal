@@ -13,7 +13,7 @@ cabal-version:       >=1.10
 library
   exposed-modules:
     Network.Cloudant.Api
-    Network.Cloudant.Request
+    Network.Cloudant.Internal.Request
   build-depends:
     base    == 4.*,
     http-conduit >= 1.8,

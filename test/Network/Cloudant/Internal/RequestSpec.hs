@@ -1,6 +1,6 @@
-module Network.Cloudant.RequestSpec ( main, spec ) where
+module Network.Cloudant.Internal.RequestSpec ( main, spec ) where
 
-import           Network.Cloudant.Request
+import           Network.Cloudant.Internal.Request
 import           Test.Hspec
 
 main :: IO ()

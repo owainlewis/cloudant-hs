@@ -1,8 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Network.Cloudant.Request
+module Network.Cloudant.Internal.Request
   ( Auth
-  , user
-  , pass
   , makeRequest
   , get
   , post
@@ -15,17 +13,13 @@ import           Control.Lens
 import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
 import           Data.Maybe                 (fromJust, fromMaybe)
+import           Data.Text                  (Text)
 import           Network.HTTP.Conduit
 
-type Auth = (String, String)
+data Auth = Auth { username :: String, password :: String }
+    deriving ( Show, Ord, Eq )
 
 type QueryParams = [(BS.ByteString, Maybe BS.ByteString)]
-
-user :: Auth -> String
-user auth = auth ^. _1
-
-pass :: Auth -> String
-pass auth = auth ^. _2
 
 -- Build a request with basic authentication
 buildRequest ::
@@ -36,7 +30,9 @@ buildRequest ::
     IO Request
 buildRequest reqMethod url auth body = do
     let reqBody  = fromMaybe (BS.pack "") body
-        uri = applyBasicAuth (BS.pack $ user auth) (BS.pack $ pass auth) $ fromJust $ parseUrl url
+        user = BS.pack $ username auth
+        pass = BS.pack $ password auth
+        uri = applyBasicAuth user pass $ fromJust $ parseUrl url
         request  = uri { method = (BS.pack reqMethod)
                        , secure = True
                        , requestHeaders = [("Content-Type", "application/json")]
@@ -78,7 +74,7 @@ safeRequest request = do
 -- HTTP method, url, basic authentication and an optional request body
 --
 -- Example :
---     makeRequest "https://httpbin.org/get" ("jack", "secret") Nothing
+--     makeRequest "https://httpbin.org/get" (Auth "ibm", "secret") Nothing
 --
 makeRequest ::
     String -> -- HTTP Method e.g GET
