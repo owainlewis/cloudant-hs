@@ -68,6 +68,10 @@ instance Cloudant GetDocuments where
     getResource (GetDocuments account database) =
         getHTTPEndpoint account (slash database)
 
+getDocuments account auth database =
+  response
+  where response = get (getResource $ GetDocuments account database) auth Nothing
+
 -- | 5. Get changes
 ------------------------------------------------------------------
 
