@@ -19,18 +19,18 @@ import           Network.HTTP.Conduit
 -- Transformers
 
 import           Control.Exception
-import           Control.Monad.Error
-
----------------------------------------
+import           Control.Monad.Except
 
 ---------------------------------------
 
 data Auth = Auth { username :: String, password :: String }
     deriving ( Show, Ord, Eq )
 
+data RequestType = GET | POST | PUT | DELETE deriving ( Show )
+
 type QueryParams = [(BS.ByteString, Maybe BS.ByteString)]
 
--- Build a request with basic authentication
+-- | Build a request with basic authentication
 buildRequest ::
     String ->
     String ->
@@ -50,7 +50,7 @@ buildRequest reqMethod url auth body = do
                        }
     return request
 
--- Helper methods
+-- | Helper methods
 get, post, put, delete ::
     String ->
     Auth ->
@@ -61,7 +61,7 @@ post   = makeRequest "POST"
 put    = makeRequest "PUT"
 delete = makeRequest "DELETE"
 
--- Run a HTTP request returning the response body
+-- | Run a HTTP request returning the response body
 --
 runRequest :: IO Request -> IO LBS.ByteString
 runRequest request = do
@@ -69,6 +69,7 @@ runRequest request = do
     response <- withManager $ httpLbs req
     return . responseBody $ response
 
+-- | Catch all exceptions
 catchAny :: IO a -> (E.SomeException -> IO a) -> IO a
 catchAny = E.catch
 
@@ -79,7 +80,7 @@ safeRequest request = do
         Left  e -> return . Left $ (show e)
         Right r -> return . Right $ r
 
--- Make a HTTP request
+-- | Make a HTTP request
 -- HTTP method, url, basic authentication and an optional request body
 --
 -- Example :
@@ -94,14 +95,14 @@ makeRequest ::
 makeRequest method url auth body =
     safeRequest $ buildRequest method url auth body
 
--- Make a HTTP request with additional query params
+-- | Make a HTTP request with additional query params
 --
 requestWithParams ::
     String                                 -> -- HTTP Method
     String                                 -> -- URL
     Auth                                   -> -- Basic authentication
     Maybe BS.ByteString                    -> -- Optional request body
-    [(BS.ByteString, Maybe BS.ByteString)] ->  -- A list of query params
+    [(BS.ByteString, Maybe BS.ByteString)] -> -- A list of query params
     IO (Either String LBS.ByteString)
 requestWithParams method url auth body params =
     safeRequest $ (setQueryString params) `fmap` initialRequest
