@@ -40,15 +40,18 @@ urlForAccount account = "https://" <> account <> ".cloudant.com"
 getHTTPEndpoint :: String -> String -> String
 getHTTPEndpoint account resource = concat [ "https://", account, ".cloudant.com", resource ]
 
--- Utility function to add a slash prefix to a given request path
+-- | Utility function to add a slash prefix to a given request path
 --
 slash :: String -> String
 slash s = "/" <> s
 
--- Strict encoding for Aeson
+-- | Strict encoding for Aeson
+--
 strictEncode :: ToJSON a => a -> BS.ByteString
 strictEncode = LBS.toStrict . encode
 
+-- | Given a repsonse try and convert it to a given type
+--
 transformJSON :: (FromJSON a) => IO (Either String LBS.ByteString) -> IO (Maybe a)
 transformJSON response = do
   r <- response
