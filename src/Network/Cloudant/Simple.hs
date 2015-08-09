@@ -5,10 +5,10 @@
 --
 module Network.Cloudant.Simple where
 
+import           Data.Aeson                        (FromJSON, decode)
 import           Data.ByteString.Lazy              as LBS
 import           Data.Monoid                       ((<>))
 import           Data.Text                         (Text)
-import           Network.Cloudant.Api              (transformJSON)
 import           Network.Cloudant.Internal.Request
 
 data Config = Config {
@@ -28,10 +28,19 @@ localConfig = Config {
 authFromConfig :: Config -> Auth
 authFromConfig config = Auth (configUsername config) (configPassword config)
 
--- TODO change the types to reflect errors etc
+-- | Given a repsonse try and convert it to a given type
 --
-getDatabases :: Config -> IO (Maybe [String])
+transformJSON :: (FromJSON a) => IO (Either String LBS.ByteString) -> IO (Either String a)
+transformJSON response = do
+  r <- response
+  case r of
+    Left e    -> return $ Left e
+    Right bs  -> case decode $ bs of
+      Nothing     -> return $ Left "Cannot transform JSON"
+      Just result -> return $ Right $ result
+
+getDatabases :: Config -> IO (Either String ByteString)
 getDatabases config =
   let endpoint = (configUrl config) <> "/_all_dbs"
-      response = get endpoint (authFromConfig config) Nothing
-  in transformJSON response :: IO (Maybe [String])
+      response = get endpoint (authFromConfig config) Nothing in
+  response
