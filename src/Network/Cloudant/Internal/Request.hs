@@ -70,9 +70,9 @@ makeRequest method url auth body =
 
 -- | Helper methods
 get, post, put, delete ::
-    String ->
-    Auth ->
-    Maybe BS.ByteString ->
+    String -> -- Request URL
+    Auth   -> -- Authentication credentials
+    Maybe BS.ByteString -> -- A Request body
     IO (Either String LBS.ByteString)
 get    = makeRequest GET
 post   = makeRequest POST
