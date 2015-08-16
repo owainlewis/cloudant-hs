@@ -83,7 +83,7 @@ data RequestBuilder = RequestBuilder {
   , reqResource :: String
   , reqBody     :: Maybe BS.ByteString
   , reqParams   :: Maybe [(BS.ByteString, Maybe BS.ByteString)]
-}
+} deriving ( Show )
 
 asRequest :: Config -> RequestBuilder -> IO Request
 asRequest conf RequestBuilder { reqMethod = m,  reqResource = r, reqBody = b,  reqParams = p } =
