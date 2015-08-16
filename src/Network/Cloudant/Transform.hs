@@ -14,7 +14,7 @@ import           GHC.Generics         (Generic)
 strictEncode :: ToJSON a => a -> BS.ByteString
 strictEncode = LBS.toStrict . encode
 
--- | Given a repsonse try and convert it to a given type
+-- | Given a response, try and convert it to a concrete type
 --
 transform :: (FromJSON a) => IO (Either String LBS.ByteString) -> IO (Either String a)
 transform response = do
