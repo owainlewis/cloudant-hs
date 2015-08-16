@@ -11,12 +11,13 @@ The configuration needed for Cloudant is fairly minimal. We need
 2. An API Key which is made up of a username and password
 
 ```haskell
+-- Remote cloudant config
+conf :: Config
+conf = Config "https://owainlewis.cloudant.com" $ ApiKey "USER" "PASS"
+
 -- Local configuration for testing against CouchDB
 localConfig :: Config
-localConfig = Config {
-    url = "http://192.168.59.103",
-    apiKey = ApiKey "admin" "password"
-}
+localConfig = Config "http://192.168.59.103" $ ApiKey "admin" "password"
 ```
 
 ## Example
