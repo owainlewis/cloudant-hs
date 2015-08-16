@@ -1,10 +1,11 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Network.Cloudant.Example where
+module Example where
 
 import           Data.Aeson
-import qualified Data.ByteString.Lazy as LBS
-import           GHC.Generics
+import qualified Data.ByteString.Lazy  as LBS
+import           GHC.Generics          (Generic)
+import           Network.Cloudant.Core as Cloudant
 
 data Customer = Customer {
     firstName :: String

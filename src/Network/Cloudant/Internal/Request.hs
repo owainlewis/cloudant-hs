@@ -92,5 +92,5 @@ asRequest conf RequestBuilder { reqMethod = m,  reqResource = r, reqBody = b,  r
       underlyingRequest = build m fullResource key b in
   underlyingRequest
 
-runRequest :: Config -> RequestBuilder -> IO LBS.ByteString
-runRequest conf = run . (asRequest conf)
+runRequest :: Config -> RequestBuilder -> IO (Either String LBS.ByteString)
+runRequest conf = runSafe . (asRequest conf)

@@ -13,6 +13,8 @@ cabal-version:       >=1.10
 library
   exposed-modules:
     Network.Cloudant.Core
+  , Network.Cloudant.Database
+  , Network.Cloudant.Document
   build-depends:
     base    == 4.*,
     http-conduit >= 1.8,
