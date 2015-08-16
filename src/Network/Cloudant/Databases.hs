@@ -4,11 +4,11 @@ module Network.Cloudant.Databases
   )
   where
 
-import           Data.Monoid                       ((<>))
 import           Network.Cloudant.Internal.Request
 
 getDatabases :: RequestBuilder
 getDatabases = RequestBuilder GET "/_all_dbs" Nothing Nothing
 
+createDatabase :: String -> RequestBuilder
 createDatabase name =
-  RequestBuilder PUT ("/" <> name) Nothing Nothing
+  RequestBuilder PUT (withSlash name) Nothing Nothing

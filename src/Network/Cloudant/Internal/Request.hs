@@ -18,6 +18,9 @@ import           Network.HTTP.Conduit
 
 data HTTPMethod = GET | POST | PUT | DELETE deriving ( Show )
 
+withSlash :: String -> String
+withSlash s = "/" <> s
+
 -- | Build a base request with authentication
 build ::
     HTTPMethod ->
