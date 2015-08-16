@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Transform where
@@ -8,6 +9,9 @@ import           Data.Aeson
 import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
 import           GHC.Generics         (Generic)
+
+#if __GLASGOW_HASKELL__ >= 706
+#endif
 
 -- | Strict encoding for Aeson
 --
@@ -27,6 +31,15 @@ transform response = do
 
 -- Response types
 --
+
+data IRPair = IRPair {
+    _id  :: String
+  , _rev :: String
+} deriving ( Show, Eq, Generic )
+
+instance FromJSON IRPair
+instance ToJSON IRPair
+
 data OKResponse = OKResponse {
     createdOk      :: Bool
   , createId       :: String

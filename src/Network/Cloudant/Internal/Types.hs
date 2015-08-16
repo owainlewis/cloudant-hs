@@ -1,8 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Network.Cloudant.Internal.Types
-  ( ApiKey(..)
-  , Config(..)
-  ) where
+module Network.Cloudant.Internal.Types where
 
 -- An API key used for authentication
 -- This is made up of a username and password which get sent via basic auth
