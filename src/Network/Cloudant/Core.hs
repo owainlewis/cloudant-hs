@@ -12,16 +12,24 @@ import           Network.Cloudant.Util             (localConfig)
 
 -- Database
 -----------------------------------------------------------------
-createDatabase :: Config
-  -> String
-  -> IO (Either String LBS.ByteString)
+
+createDatabase :: 
+  Config -> -- ^ configuration
+  String -> -- ^ database name
+  IO (Either String LBS.ByteString)
 createDatabase config database = runRequest config (Database.create database)
 
-getDatabases :: Config -> IO (Either String [String])
+getDatabases :: 
+  Config -> -- ^ configuration
+  IO (Either String [String])
 getDatabases config = 
     TF.transform response :: IO (Either String [String])
       where response = runRequest config (Database.all)
 
+databaseInfo :: 
+  Config -> -- ^ configuration
+  String -> -- ^ database name
+  IO (Either String TF.DatabaseInfo)
 databaseInfo config database =
     TF.transform response :: IO (Either String TF.DatabaseInfo)
       where response = runRequest config (Database.info database)
