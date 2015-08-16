@@ -20,6 +20,10 @@ localConfig :: Config
 localConfig = Config "http://192.168.59.103" $ ApiKey "admin" "password"
 ```
 
+## Return types
+
+All responses are in the form **IO (Either Error Response)** 
+
 ## Example
 
 ```haskell
@@ -52,6 +56,11 @@ asJSON customer = encode . toJSON $ customer
 Cloudant.createDatabase localconfig "customers"
 
 -- Add a document to the database
+-- This will automatically serialize any document type with a ToJSON instance
+
+-- The signature for createDocument is
+-- createDocument :: ToJSON a => Config -> String -> a -> IO (Either String TF.OKResponse)
+
 Cloudant.createDocument localConfig "customers" customer
     where customer = Customer "Jack" "Dorsey" "jack@twitter.com"
 
