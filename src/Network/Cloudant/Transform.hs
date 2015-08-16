@@ -1,7 +1,16 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Transform where
 
+import           Control.Applicative  ((<$>), (<*>))
+import           Control.Monad        (mzero)
 import           Data.Aeson
+import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
+
+-- | Strict encoding for Aeson
+--
+strictEncode :: ToJSON a => a -> BS.ByteString
+strictEncode = LBS.toStrict . encode
 
 -- | Given a repsonse try and convert it to a given type
 --
@@ -13,3 +22,18 @@ transformJSON response = do
     Right bs  -> case decode $ bs of
       Nothing     -> return $ Left "Cannot transform JSON"
       Just result -> return $ Right $ result
+
+-- Response types
+
+data OKResponse = OKResponse {
+    createdOk      :: Bool
+  , createId       :: String
+  , createRevision :: String
+} deriving ( Show )
+
+instance FromJSON OKResponse where
+    parseJSON (Object o) =
+        OKResponse <$> o .: "ok"
+                   <*> o .: "id"
+                   <*> o .: "rev"
+    parseJSON _ = mzero

@@ -1,0 +1,3 @@
+setup:
+   description: setup local couchdb for testing
+   command: boot2docker up && docker run -d -p 5984:5984 -e COUCHDB_PASS="password" tutum/couchdb
