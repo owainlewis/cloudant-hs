@@ -11,5 +11,4 @@ getDatabases :: RequestBuilder
 getDatabases = RequestBuilder GET "/_all_dbs" Nothing Nothing
 
 createDatabase name =
-  let endpoint = "/" <> name in
-  RequestBuilder POST endpoint Nothing Nothing
+  RequestBuilder PUT ("/" <> name) Nothing Nothing

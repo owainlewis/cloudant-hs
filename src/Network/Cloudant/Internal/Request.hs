@@ -33,7 +33,8 @@ build reqMethod url apiKey body = do
         uri = applyBasicAuth u p $ fromJust $ parseUrl url
         request  = uri { method = (BS.pack . show $ reqMethod)
                        , secure = if remoteRequest then True else False
-                       , requestHeaders = [("Content-Type", "application/json")]
+                       , requestHeaders =
+                           (requestHeaders uri) <> [("Content-Type", "application/json")]
                        , requestBody = RequestBodyBS reqBody
                        , port = if remoteRequest then 443 else 5984
                        }

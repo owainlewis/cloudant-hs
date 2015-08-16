@@ -15,6 +15,6 @@ getHTTPEndpoint account resource = concat [ "https://", account, ".cloudant.com"
 -- Local configuration for testing etc
 localConfig :: Config
 localConfig = Config {
-    url = "http://192.168.59.103:5984",
+    url = "http://192.168.59.103",
     apiKey = ApiKey "admin" "password"
 }
