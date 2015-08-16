@@ -39,3 +39,16 @@ instance FromJSON OKResponse where
                    <*> o .: "id"
                    <*> o .: "rev"
     parseJSON _ = mzero
+
+data DatabaseInfo = DatabaseInfo {
+    dbName        :: String
+  , documentCount :: Int
+  , diskSize      :: Int
+} deriving ( Show )
+
+instance FromJSON DatabaseInfo where
+    parseJSON (Object o) =
+        DatabaseInfo <$> o .: "db_name"
+                     <*> o .: "doc_count"
+                     <*> o .: "disk_size"
+    parseJSON _ = mzero

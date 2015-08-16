@@ -43,17 +43,17 @@ build reqMethod url apiKey body = do
                        }
     return request
 
-get :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
-get    = build GET
+httpGet :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
+httpGet    = build GET
 
-post :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
-post   = build POST
+httpPost :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
+httpPost   = build POST
 
-put :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
-put    = build PUT
+httpPut :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
+httpPut    = build PUT
 
-delete :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
-delete = build DELETE
+httpDelete :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
+httpDelete = build DELETE
 
 withParams :: Functor f => f Request -> [(BS.ByteString, Maybe BS.ByteString)] -> f Request
 withParams req params = (setQueryString params) `fmap` req

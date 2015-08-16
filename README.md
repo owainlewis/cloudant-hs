@@ -22,7 +22,7 @@ localConfig = Config "http://192.168.59.103" $ ApiKey "admin" "password"
 
 ## Return types
 
-All responses are in the form **IO (Either Error Response)** 
+All responses are in the form **IO (Either Error Response)**
 
 ## Example
 
@@ -64,4 +64,11 @@ Cloudant.createDatabase localconfig "customers"
 Cloudant.createDocument localConfig "customers" customer
     where customer = Customer "Jack" "Dorsey" "jack@twitter.com"
 
+```
+
+## Database Info
+
+```haskell
+λ> databaseInfo localConfig "customers"
+Right (DatabaseInfo {dbName = "customers", documentCount = 3, diskSize = 16482})
 ```
