@@ -21,7 +21,7 @@ localConfig = Config {
 
 ## Example
 
-```
+```haskell
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Example where
@@ -47,8 +47,11 @@ customer1 = Customer "Jack" "Dorsey" "jack@twitter.com"
 asJSON :: ToJSON s => s -> LBS.ByteString
 asJSON customer = encode . toJSON $ customer
 
--- Cloudant.createDatabase localconfig "customers"
+-- Create a new database
+Cloudant.createDatabase localconfig "customers"
 
--- Cloudant.createDocument localConfig "customers" (Customer "Jack" "Dorsey" "jack@twitter.com")
+-- Add a document to the database
+Cloudant.createDocument localConfig "customers" customer
+    where customer = Customer "Jack" "Dorsey" "jack@twitter.com"
 
 ```
