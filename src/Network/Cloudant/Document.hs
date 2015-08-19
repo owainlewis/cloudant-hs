@@ -11,7 +11,8 @@ type ID       = String
 -- Create a Cloudant document
 create :: ToJSON s => Database -> s -> RequestBuilder
 create database document = RequestBuilder POST (withSlash database) (Just json) Nothing
-    where json = T.strictEncode . toJSON $ document
+    where json = asJSONStrict document
+          asJSONStrict = T.strictEncode . toJSON
 
 get :: Database -> ID -> RequestBuilder
 get database id = RequestBuilder GET ((withSlash database) <> (withSlash id)) Nothing Nothing
