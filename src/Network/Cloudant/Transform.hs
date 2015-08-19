@@ -29,9 +29,6 @@ transform response = do
       Nothing     -> return $ Left "Cannot transform JSON"
       Just result -> return $ Right $ result
 
--- Response types
---
-
 data IRPair = IRPair {
     _id  :: String
   , _rev :: String
