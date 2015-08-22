@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Util where
 
-import           Data.Aeson
+import           Data.Aeson                        (ToJSON, encode, toJSON)
 import qualified Data.ByteString                   as BS
 import qualified Data.ByteString.Lazy              as LBS
 import           Data.Monoid                       (mconcat, (<>))
