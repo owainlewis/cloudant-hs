@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeOperators #-}
 module Network.Cloudant.Core where
 
 import           Data.Aeson                        (FromJSON, ToJSON)
@@ -13,20 +12,24 @@ import           Network.Cloudant.Util             (localConfig)
 -- Database
 -----------------------------------------------------------------
 
-createDatabase :: 
+createDatabase ::
   Config -> -- ^ configuration
   String -> -- ^ database name
   IO (Either String LBS.ByteString)
 createDatabase config database = runRequest config (Database.create database)
 
-getDatabases :: 
+deleteDatabase
+  :: Config -> String -> IO (Either String LBS.ByteString)
+deleteDatabase config database = runRequest config (Database.delete database)
+
+getDatabases ::
   Config -> -- ^ configuration
   IO (Either String [String])
-getDatabases config = 
+getDatabases config =
     TF.transform response :: IO (Either String [String])
       where response = runRequest config (Database.all)
 
-databaseInfo :: 
+databaseInfo ::
   Config -> -- ^ configuration
   String -> -- ^ database name
   IO (Either String TF.DatabaseInfo)
@@ -59,14 +62,22 @@ getDocumentIR config database id =
     TF.transform response :: IO (Either String TF.IRPair)
       where response = runRequest config (Document.get database id)
 
-getDocument
-  :: FromJSON a =>
-     Config ->
-     String ->
-     String ->
-     IO (Either String a)
-getDocument config database id =
-    TF.transform response
-    where response = runRequest config (Document.get database id)
+getDocumentRaw
+  :: Config
+     -> Document.Database
+     -> Document.ID
+     -> IO (Either String LBS.ByteString)
+getDocumentRaw config database id =
+    runRequest config (Document.get database id)
+
+-- Update
+
+updateDocument config database id rev = ()
+
+-- | Delete
+-- Delete a document from Cloudant
+deleteDocument :: Config -> String -> String -> a -> IO (Either String LBS.ByteString)
+deleteDocument config database id rev =
+  runRequest config (Document.delete database id rev)
 
 -----------------------------------------------------------------
