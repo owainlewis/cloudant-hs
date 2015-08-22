@@ -3,20 +3,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Transform where
 
-import           Control.Applicative  ((<$>), (<*>))
-import           Control.Monad        (mzero)
+import           Control.Applicative   ((<$>), (<*>))
+import           Control.Monad         (mzero)
 import           Data.Aeson
-import qualified Data.ByteString      as BS
-import qualified Data.ByteString.Lazy as LBS
-import           GHC.Generics         (Generic)
+import qualified Data.ByteString       as BS
+import qualified Data.ByteString.Lazy  as LBS
+import           GHC.Generics          (Generic)
+import           Network.Cloudant.Util (strictEncode)
 
 #if __GLASGOW_HASKELL__ >= 706
 #endif
-
--- | Strict encoding for Aeson
---
-strictEncode :: ToJSON a => a -> BS.ByteString
-strictEncode = LBS.toStrict . encode
 
 -- | Given a response, try and convert it to a concrete type
 --

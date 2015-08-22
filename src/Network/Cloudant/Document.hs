@@ -2,8 +2,7 @@ module Network.Cloudant.Document where
 
 import           Data.Aeson
 import           Network.Cloudant.Internal.Request
-import qualified Network.Cloudant.Transform        as T
-import           Network.Cloudant.Util             (foldPaths)
+import           Network.Cloudant.Util             (asJSONStrict, foldPaths)
 
 type Database = String
 type ID       = String
@@ -12,12 +11,11 @@ type ID       = String
 create :: ToJSON s => Database -> s -> RequestBuilder
 create database document = RequestBuilder POST (withSlash database) (Just json) Nothing
     where json = asJSONStrict document
-          asJSONStrict = T.strictEncode . toJSON
 
 get :: Database -> ID -> RequestBuilder
 get database id =
     RequestBuilder GET path Nothing Nothing
-      where path = foldPaths [database, id]
+        where path = foldPaths [database, id]
 
 -- Update
 
@@ -29,6 +27,5 @@ get database id =
 -- Delete
 -- DELETE /$DATABASE/$DOCUMENT_ID?rev=$REV
 delete :: String -> String -> a -> RequestBuilder
-delete database id rev =
-    RequestBuilder DELETE path Nothing Nothing
-      where path = foldPaths [database, id]
+delete database id rev = RequestBuilder DELETE path Nothing Nothing
+    where path = foldPaths [database, id]

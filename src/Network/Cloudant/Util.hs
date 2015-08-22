@@ -1,5 +1,9 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Network.Cloudant.Util where
 
+import           Data.Aeson
+import qualified Data.ByteString                   as BS
+import qualified Data.ByteString.Lazy              as LBS
 import           Data.Monoid                       (mconcat, (<>))
 import           Network.Cloudant.Internal.Request (withSlash)
 import           Network.Cloudant.Internal.Types
@@ -18,3 +22,11 @@ localConfig = Config "http://192.168.59.103" $ ApiKey "admin" "password"
 --   e.g foldPaths ["foo", "bar"] => "/foo/bar"
 foldPaths :: [String] -> String
 foldPaths = mconcat . map withSlash
+
+-- | Strict encoding for Aeson
+--
+strictEncode :: ToJSON a => a -> BS.ByteString
+strictEncode = LBS.toStrict . encode
+
+asJSONStrict :: ToJSON a => a -> BS.ByteString
+asJSONStrict = strictEncode . toJSON
