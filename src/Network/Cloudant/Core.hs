@@ -74,7 +74,7 @@ getDocumentRaw config database id =
 
 updateDocument config database id rev = ()
 
--- | Delete
+-- | Deltee
 -- Delete a document from Cloudant
 deleteDocument :: Config -> String -> String -> a -> IO (Either String LBS.ByteString)
 deleteDocument config database id rev =

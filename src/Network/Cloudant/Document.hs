@@ -1,15 +1,12 @@
 module Network.Cloudant.Document where
 
 import           Data.Aeson
-import           Data.Monoid                       (mconcat, (<>))
 import           Network.Cloudant.Internal.Request
 import qualified Network.Cloudant.Transform        as T
+import           Network.Cloudant.Util             (foldPaths)
 
 type Database = String
 type ID       = String
-
-foldPaths :: [String] -> String
-foldPaths = mconcat . map withSlash
 
 -- Create a Cloudant document
 create :: ToJSON s => Database -> s -> RequestBuilder
