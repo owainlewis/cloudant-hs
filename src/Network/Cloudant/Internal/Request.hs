@@ -1,9 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-
-{--
-  Low level requests for Cloudant and Couchbase
-
--}
 module Network.Cloudant.Internal.Request where
 
 import qualified Control.Exception               as E
