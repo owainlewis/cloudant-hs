@@ -25,15 +25,9 @@ import           Network.Cloudant.Util             (foldPaths)
 create :: String -> String -> RequestBuilder
 create database designDoc =
     RequestBuilder PUT path Nothing Nothing
-        where path = foldPaths [ database
-                               , "_design"
-                               , designDoc
-                               ]
+        where path = foldPaths [ database, "_design", designDoc ]
 
 get :: String -> String -> RequestBuilder
 get database designDoc =
     RequestBuilder GET path Nothing Nothing
-        where path = foldPaths [ database
-                               , "_design"
-                               , designDoc
-                               ]
+        where path = foldPaths [ database, "_design", designDoc ]
