@@ -2,7 +2,7 @@
 module Network.Cloudant.Internal.Types where
 
 -- An API key used for authentication
--- This is made up of a username and password which get sent via basic auth
+--
 data ApiKey = ApiKey {
     username :: String
   , password :: String
