@@ -53,8 +53,6 @@ httpDelete = build DELETE
 withParams :: Functor f => f Request -> [(BS.ByteString, Maybe BS.ByteString)] -> f Request
 withParams req params = (setQueryString params) `fmap` req
 
--------------------------------------------------------------------------------
-
 -- | Run a HTTP request returning the response body
 --
 run :: IO Request -> IO LBS.ByteString
@@ -70,8 +68,6 @@ runSafe request = do
     case response of
         Left  e -> return . Left $ (show e)
         Right r -> return . Right $ r
-
-----------------------------------------------------------------
 
 data RequestBuilder = RequestBuilder {
     reqMethod   :: HTTPMethod
