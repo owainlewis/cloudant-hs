@@ -28,9 +28,11 @@ asJSON customer = encode . toJSON $ customer
 ------------------------------------------------
 
 -- | Create a database
+example1 :: IO (Either String LBS.ByteString)
 example1 = Cloudant.createDatabase localConfig "customers"
 
 -- | Delete a database
+example2 :: IO (Either String LBS.ByteString)
 example2 = Cloudant.deleteDatabase localConfig "customers"
 
 -- Insert documents
@@ -41,6 +43,7 @@ example3 = (flip mapM_) customers (Cloudant.createDocument localConfig "customer
                       , Customer "Owain" "Lewis" "owain@owainlewis.com"
                       ]
 
+exampleView :: String
 exampleView = unlines [ "function (doc) {"
                       , "    if (doc.email == \"owain@owainlewis.com\") {"
                       , "        emit(doc._id, doc);"
