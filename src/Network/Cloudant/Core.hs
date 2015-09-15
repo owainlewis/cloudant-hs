@@ -1,5 +1,4 @@
 module Network.Cloudant.Core where
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Network.Cloudant.Core
@@ -93,5 +92,3 @@ updateDocument config database id rev = ()
 deleteDocument :: Config -> String -> String -> a -> IO (Either String LBS.ByteString)
 deleteDocument config database id rev =
   runRequest config (Document.delete database id rev)
-
------------------------------------------------------------------
