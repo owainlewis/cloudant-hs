@@ -13,7 +13,7 @@ data Customer = Customer {
     firstName :: String
   , lastName  :: String
   , email     :: String
-} deriving ( Show, Generic )
+} deriving ( Eq, Generic, Show )
 
 instance ToJSON Customer
 instance FromJSON Customer
