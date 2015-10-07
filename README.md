@@ -1,4 +1,6 @@
-# Cloudant-hs
+# Cloudant
+
+![](https://cloudant.com/wp-content/themes/cloudant/images/ibm_cloudant.png)
 
 This package provides a Haskell interface to the IBM Cloudant database.
 It should also have full compatibility with CouchDB
