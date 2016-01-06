@@ -24,9 +24,6 @@ customer1 = Customer "Jack" "Dorsey" "jack@twitter.com"
 asJSON :: ToJSON s => s -> LBS.ByteString
 asJSON customer = encode . toJSON $ customer
 
--- | EXAMPLES
-------------------------------------------------
-
 -- | Create a database
 example1 :: IO (Either String LBS.ByteString)
 example1 = Cloudant.createDatabase localConfig "customers"
@@ -35,8 +32,7 @@ example1 = Cloudant.createDatabase localConfig "customers"
 example2 :: IO (Either String LBS.ByteString)
 example2 = Cloudant.deleteDatabase localConfig "customers"
 
--- Insert documents
---
+-- | Insert documents
 example3 :: IO ()
 example3 = (flip mapM_) customers (Cloudant.createDocument localConfig "customers")
     where customers = [ Customer "Jack" "Dorsey" "jack@twitter.com"
