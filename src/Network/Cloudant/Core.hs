@@ -12,7 +12,6 @@ module Network.Cloudant.Core where
 -- Haskell client for IBM Cloudant and Couch DB
 --
 -----------------------------------------------------------------------------
-
 import           Data.Aeson                        (FromJSON, ToJSON)
 import qualified Data.ByteString.Lazy              as LBS
 import qualified Network.Cloudant.Database         as Database
@@ -22,9 +21,7 @@ import           Network.Cloudant.Internal.Types   (Config (..), Document (..))
 import qualified Network.Cloudant.Transform        as TF
 import           Network.Cloudant.Util             (localConfig)
 
--- Database
------------------------------------------------------------------
-
+-- | Database
 createDatabase ::
   Config -> -- ^ configuration
   String -> -- ^ database name
@@ -50,11 +47,7 @@ databaseInfo config database =
     TF.transform response :: IO (Either String TF.DatabaseInfo)
       where response = runRequest config (Database.info database)
 
--- Document
------------------------------------------------------------------
-
--- Create a document in Cloudant
---
+-- | Create a document in Cloudant
 createDocument :: ToJSON document =>
   Config ->   -- ^ configuration
   String ->   -- ^ database name
@@ -64,8 +57,7 @@ createDocument config database document =
     TF.transform response :: IO (Either String TF.OKResponse)
       where response = runRequest config (Document.create database document)
 
--- Get document ID and revision
---
+-- | Get document ID and revision
 getDocumentIR ::
    Config ->
    String ->
@@ -83,12 +75,10 @@ getDocumentRaw
 getDocumentRaw config database id =
     runRequest config (Document.get database id)
 
--- Update
-
+-- | Update
 updateDocument config database id rev = ()
 
--- | Deltee
--- Delete a document from Cloudant
+-- | Delete a document from Cloudant
 deleteDocument :: Config -> String -> String -> a -> IO (Either String LBS.ByteString)
 deleteDocument config database id rev =
   runRequest config (Document.delete database id rev)
