@@ -54,7 +54,6 @@ withParams :: Functor f => f Request -> [(BS.ByteString, Maybe BS.ByteString)] -
 withParams req params = (setQueryString params) `fmap` req
 
 -- | Run a HTTP request returning the response body
---
 run :: IO Request -> IO LBS.ByteString
 run request = do
     req <- request
