@@ -1,17 +1,5 @@
 module Network.Cloudant.Core where
------------------------------------------------------------------------------
--- |
--- Module      :  Network.Cloudant.Core
--- Copyright   :  2015 Owain Lewis
--- License     :  public domain
---
--- Maintainer  :  owain@owainlewis.com
--- Stability   :  experimental
--- Portability :  portable
---
--- Haskell client for IBM Cloudant and Couch DB
---
------------------------------------------------------------------------------
+
 import           Data.Aeson                        (FromJSON, ToJSON)
 import qualified Data.ByteString.Lazy              as LBS
 import qualified Network.Cloudant.Database         as Database
