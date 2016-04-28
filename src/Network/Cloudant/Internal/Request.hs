@@ -39,13 +39,13 @@ build reqMethod url apiKey body = do
     return request
 
 httpGet :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
-httpGet    = build GET
+httpGet = build GET
 
 httpPost :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
-httpPost   = build POST
+httpPost = build POST
 
 httpPut :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
-httpPut    = build PUT
+httpPut = build PUT
 
 httpDelete :: String -> ApiKey -> Maybe BS.ByteString -> IO Request
 httpDelete = build DELETE
