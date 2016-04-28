@@ -63,8 +63,7 @@ Cloudant.createDatabase localconfig "customers"
 -- The signature for createDocument is
 -- createDocument :: ToJSON a => Config -> String -> a -> IO (Either String TF.OKResponse)
 
-Cloudant.createDocument localConfig "customers" customer
-    where customer = Customer "Jack" "Dorsey" "jack@twitter.com"
+Cloudant.createDocument localConfig "customers" (Customer "Jack" "Dorsey" "jack@twitter.com")
 
 ```
 
