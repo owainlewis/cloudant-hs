@@ -11,33 +11,26 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
-  exposed-modules:
-    Network.Cloudant.Core,
-    Network.Cloudant.Database,
-    Network.Cloudant.Document
-  build-depends:
-    base    == 4.*,
-    http-conduit >= 1.8,
-    wreq,
-    lens,
-    aeson,
-    bytestring,
-    text,
-    mtl,
-    transformers,
-    containers
+  exposed-modules: Network.Cloudant.Core, Network.Cloudant.Database, Network.Cloudant.Document
+  build-depends: base    == 4.*,
+                 http-conduit >= 1.8,
+                 http-dispatch >= 0.5.0.0,
+                 wreq,
+                 lens,
+                 aeson,
+                 bytestring,
+                 text,
+                 mtl,
+                 transformers,
+                 containers
   hs-source-dirs:      src
   default-language:    Haskell2010
 
 test-suite spec
-  type:
-      exitcode-stdio-1.0
-  ghc-options:
-      -Wall
-  hs-source-dirs:
-      test
-  main-is:
-      Spec.hs
+  type: exitcode-stdio-1.0
+  ghc-options: -Wall
+  hs-source-dirs: test
+  main-is: Spec.hs
   build-depends:
       base    == 4.*
     , cloudant
