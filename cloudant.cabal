@@ -14,7 +14,7 @@ library
   exposed-modules: Network.Cloudant.Core, Network.Cloudant.Database, Network.Cloudant.Document
   build-depends: base    == 4.*,
                  http-conduit >= 1.8,
-                 http-dispatch >= 0.5.0.0,
+                 http-dispatch >= 0.5.0.1,
                  wreq,
                  lens,
                  aeson,
