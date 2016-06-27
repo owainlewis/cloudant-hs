@@ -8,7 +8,7 @@ import qualified Data.ByteString             as S
 import qualified Data.ByteString.Char8       as SC
 
 data Config = Config {
-    host :: S.ByteString
+    hostname :: S.ByteString
   , username :: S.ByteString
   , password :: S.ByteString
 } deriving ( Show, Eq )
